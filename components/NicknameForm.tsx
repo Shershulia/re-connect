@@ -68,7 +68,7 @@ export function NicknameForm() {
       .sort((a, b) => b.timestamp - a.timestamp)[0]?.nickname || '';
     const nameForShare = (nickname.trim() || lastRegistered).slice(0, 50);
     if (!nameForShare) return;
-    const text = `Just connected to the Octopus! 🐙 My nickname: ${nameForShare}`;
+    const text = `gRE! Just connected to the @re Octopus! 🐙 My nickname: @${nameForShare}. Go to https://www.re-connect.xyz and claim your sweet spot!`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
