@@ -102,7 +102,7 @@ export function NicknameForm() {
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 className={`w-48 max-md:w-full bg-gray-900 border-gray-700 focus:border-white text-white placeholder:text-gray-400 rounded-xl ${
-                  isDuplicate ? 'border-red-500 focus:border-red-400' : ''
+                  isDuplicate && !isRegistered ? 'border-red-500 focus:border-red-400' : ''
                 }`}
                 aria-label="Nickname input"
               />
