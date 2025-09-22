@@ -98,7 +98,7 @@ export function NicknameForm() {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Enter a nickname..."
+                placeholder="X handle(without @)..."
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 className={`w-48 max-md:w-full bg-gray-900 border-gray-700 focus:border-white text-white placeholder:text-gray-400 rounded-xl ${
