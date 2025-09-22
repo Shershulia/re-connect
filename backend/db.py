@@ -1,13 +1,10 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, DeclarativeBase
-from dotenv import load_dotenv
-
-load_dotenv()
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+psycopg2://app:secret@localhost:5432/app_db"
+    "postgresql+psycopg://app:secret@localhost:5432/app_db",  # дефолт для локалки
 )
 
 engine = create_engine(
