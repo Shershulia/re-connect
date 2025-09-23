@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getAvatarUrl } from '@/lib/avatar';
 
 interface HeldItemProps {
@@ -29,56 +29,48 @@ export function HeldItem({ nickname, x, y }: HeldItemProps) {
     loadAvatar();
   }, [nickname]);
 
-  // Generate a color based on the nickname
-  const getColorFromNickname = (name: string) => {
-    const colors = [
-      'from-purple-400 to-purple-600',
-      'from-pink-400 to-pink-600', 
-      'from-indigo-400 to-indigo-600',
-      'from-violet-400 to-violet-600',
-      'from-fuchsia-400 to-fuchsia-600',
-      'from-blue-400 to-blue-600',
-      'from-cyan-400 to-cyan-600',
-      'from-teal-400 to-teal-600'
-    ];
-    const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return colors[hash % colors.length];
-  };
+  // SVG-safe unique clipPath id per nickname
+  const clipId = useMemo(() => {
+    return 'clip-' + btoa(unescape(encodeURIComponent(nickname))).replace(/=+/g, '');
+  }, [nickname]);
+
+  const size = 60;
+  const half = size / 2;
+  const radius = 14;
 
   return (
-    <motion.foreignObject
-      x={x - 35}
-      y={y - 35}
-      width="60"
-      height="60"
+    <motion.g
+      transform={`translate(${x}, ${y})`}
       initial={{ scale: 0, rotate: -180 }}
       animate={{ scale: 1, rotate: 0 }}
-      transition={{ 
-        duration: 0.8, 
-        type: "spring",
-        bounce: 0.6,
-        delay: 1.8
-      }}
+      transition={{ duration: 0.8, type: 'spring', bounce: 0.6, delay: 1.8 }}
     >
-      <div className={`w-full h-full rounded-2xl bg-gradient-to-br ${getColorFromNickname(nickname)} p-1 shadow-lg`}>
-        <div className="w-full h-full rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center overflow-hidden">
-          {isLoading ? (
-            <div className="text-white font-bold text-2xl drop-shadow-lg">
-              {nickname.charAt(0).toUpperCase()}
-            </div>
-          ) : (
-            <img 
-              src={avatarUrl} 
-              alt={`${nickname} avatar`}
-              className="w-full h-full object-cover rounded-xl"
-              onError={() => {
-                // Fallback to initial if image fails to load
-                setIsLoading(true);
-              }}
-            />
-          )}
-        </div>
-      </div>
-    </motion.foreignObject>
+      <defs>
+        <clipPath id={clipId}>
+          <rect x={-half} y={-half} width={size} height={size} rx={radius} ry={radius} />
+        </clipPath>
+      </defs>
+
+      {/* Border */}
+      <rect x={-half - 2} y={-half - 2} width={size + 4} height={size + 4} rx={radius + 2} ry={radius + 2} fill="#7c3aed" opacity="0.9" />
+      <rect x={-half} y={-half} width={size} height={size} rx={radius} ry={radius} fill="#111827" />
+
+      {isLoading || !avatarUrl ? (
+        <text x={0} y={8} textAnchor="middle" fontSize={24} fontWeight="bold" fill="#ffffff">
+          {nickname.charAt(0).toUpperCase()}
+        </text>
+      ) : (
+        <image
+          href={avatarUrl}
+          x={-half}
+          y={-half}
+          width={size}
+          height={size}
+          clipPath={`url(#${clipId})`}
+          preserveAspectRatio="xMidYMid slice"
+          onError={() => setIsLoading(true)}
+        />
+      )}
+    </motion.g>
   );
 }
