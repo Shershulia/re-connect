@@ -1,7 +1,7 @@
 export async function getAvatarUrl(nickname: string): Promise<string> {
   // Use unavatar.io for avatar generation
   try {
-    const unavatarUrl = `https://unavatar.io/x/${encodeURIComponent(nickname)}`;
+    const unavatarUrl = `https://unavatar.io/x/${(nickname)}`;
     
     // Test if the URL is accessible
     const response = await fetch(unavatarUrl, { method: 'HEAD' });
